@@ -1,13 +1,43 @@
-import React from 'react';
-import Course from './components/Course';
+// import React from 'react';
+// import Course from './components/Course';
 
-const App = ({ courses }) => {
+// const App = ({ courses }) => {
+// 	return (
+// 		<div>
+// 			<h1>Web Development Curriculum</h1>
+// 			{courses.map((course) => (
+// 				<Course course={course} key={course.id} />
+// 			))}
+// 		</div>
+// 	);
+// };
+
+// export default App;
+
+import React, { useState } from 'react';
+import Note from './components/Note';
+
+const App = (props) => {
+	const [notes, setNotes] = useState(props.notes);
+	const [newNote, setNewNote] = useState('a new note...');
+
+	const addNote = (event) => {
+		event.preventDefault();
+		console.log('button clicked', event.target);
+	};
+
 	return (
 		<div>
-			<h1>Web Development Curriculum</h1>
-			{courses.map((course) => (
-				<Course course={course} key={course.id} />
-			))}
+			<h1>Notes</h1>
+			<ul>
+				{notes.map((note) => (
+					<Note key={note.id} note={note} />
+				))}
+			</ul>
+			<form onSubmit={addNote}>
+				<input value={newNote} />
+				<button type='submit'>save</button>
+			</form>
 		</div>
 	);
 };
