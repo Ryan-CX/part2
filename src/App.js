@@ -92,7 +92,7 @@ const App = () => {
 			(p) => p.name.toLowerCase() === newName.toLowerCase()
 		);
 		if (existingPerson) {
-			alert(`${newName} is already added to phonebook.`); // avoid adding duplicate item
+			alert(`${newName} is already added to phone book.`); // avoid adding duplicate item
 			setNewName('');
 		} else {
 			setPersons(persons.concat(newInput));
