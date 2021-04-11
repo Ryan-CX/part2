@@ -65,7 +65,7 @@
 
 // export default App;
 import React, { useState } from 'react';
-
+import Filter from './components/Filter';
 const App = () => {
 	const [persons, setPersons] = useState([
 		{ name: 'Arto Hellas', number: '040-123456' },
@@ -75,10 +75,10 @@ const App = () => {
 	]);
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
-	const [searchName, setSearchName] = useState('');
+	const [filter, setFilter] = useState('');
 
 	const addName = (event) => {
-		event.preventDefault();
+		event.preventDefault(); //prevent the default action by submit button
 		const newInput = {
 			name: newName,
 			number: newNumber,
@@ -88,7 +88,7 @@ const App = () => {
 			(p) => p.name.toLowerCase() === newName.toLowerCase()
 		);
 		if (existingPerson) {
-			alert(`${newName} is already added to phonebook.`);
+			alert(`${newName} is already added to phonebook.`); // avoid adding duplicate item
 			setNewName('');
 		} else {
 			setPersons(persons.concat(newInput));
@@ -105,16 +105,17 @@ const App = () => {
 		setNewNumber(e.target.value);
 	};
 
-	const handleNameSearch = (e) => {
-		const target = setSearchName(e.target.value);
-		let found = persons.filter((p) => p.name === target);
-		setSearchName(found);
+	const handleFilterChange = (e) => {
+		setFilter(e.target.value);
 	};
+
+	const filtered = persons.filter((p) => p.name.includes(filter));
+
 	return (
 		<div>
-			<h2>Phonebook</h2>
-			filter shown with
-			<input type='text' value={searchName} onChange={handleNameSearch} />
+			<h2>Phone book</h2>
+
+			<Filter filter={filter} onFilterChange={handleFilterChange} />
 			<form onSubmit={addName}>
 				<div>
 					name:
@@ -134,7 +135,11 @@ const App = () => {
 					<li key={index}>{person.name}</li>
 				))}
 			</ul>
-			<p>{searchName}</p>
+			<div>
+				{filtered.map((x) => (
+					<p>{x}</p>
+				))}
+			</div>
 		</div>
 	);
 };
