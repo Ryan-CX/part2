@@ -66,6 +66,10 @@
 // export default App;
 import React, { useState } from 'react';
 import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Person from './components/Person';
+import FilterResult from './components/FilterResult';
+
 const App = () => {
 	const [persons, setPersons] = useState([
 		{ name: 'Arto Hellas', number: '040-123456' },
@@ -92,7 +96,7 @@ const App = () => {
 			setNewName('');
 		} else {
 			setPersons(persons.concat(newInput));
-			console.log(persons);
+
 			setNewName('');
 			setNewNumber('');
 		}
@@ -109,37 +113,31 @@ const App = () => {
 		setFilter(e.target.value);
 	};
 
-	const filtered = persons.filter((p) => p.name.includes(filter));
+	const filtered = persons.filter((p) =>
+		p.name.toLowerCase().includes(filter.toLowerCase())
+	);
 
 	return (
 		<div>
 			<h2>Phone book</h2>
 
 			<Filter filter={filter} onFilterChange={handleFilterChange} />
-			<form onSubmit={addName}>
-				<div>
-					name:
-					<input type='text' value={newName} onChange={handleInputChange} />
-				</div>
-				<div>
-					number:
-					<input type='text' value={newNumber} onChange={handleNumberChange} />
-				</div>
-				<div>
-					<button type='submit'>add</button>
-				</div>
-			</form>
+			<PersonForm
+				addName={addName}
+				newName={newName}
+				handleInputChange={handleInputChange}
+				newNumber={newNumber}
+				handleNumberChange={handleNumberChange}
+			/>
 			<h2>Numbers</h2>
 			<ul>
-				{persons.map((person, index) => (
-					<li key={index}>{person.name}</li>
-				))}
+				<Person personArr={persons} />
 			</ul>
-			<div>
-				{filtered.map((x) => (
-					<p>{x}</p>
-				))}
-			</div>
+
+			<h3>Filtered results</h3>
+			<ul>
+				<FilterResult FilterArr={filtered} />
+			</ul>
 		</div>
 	);
 };
