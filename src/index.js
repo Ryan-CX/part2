@@ -82,15 +82,19 @@
 // 	rootElement
 // );
 
-import { StrictMode } from 'react';
+// import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-
+import axios from 'axios';
 import App from './App';
 
-const rootElement = document.getElementById('root');
-ReactDOM.render(
-	<StrictMode>
-		<App />
-	</StrictMode>,
-	rootElement
-);
+axios.get('http://localhost:3001/persons').then((res) => {
+	ReactDOM.render(<App />, document.getElementById('root'));
+});
+
+// const rootElement = document.getElementById('root');
+// ReactDOM.render(
+// 	<StrictMode>
+// 		<App />
+// 	</StrictMode>,
+// 	rootElement
+// );
