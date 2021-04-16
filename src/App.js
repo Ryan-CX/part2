@@ -89,12 +89,14 @@ import PersonForm from './components/PersonForm';
 import Person from './components/Person';
 import FilterResult from './components/FilterResult';
 import personService from '../src/services/person';
+import Notification from './components/Notification';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [filter, setFilter] = useState('');
+	const [message, setMessage] = useState('');
 
 	useEffect(() => {
 		personService.getAll().then((res) => {
@@ -120,7 +122,7 @@ const App = () => {
 		if (existingPerson && existingPerson.number !== newNumber) {
 			if (
 				window.confirm(
-					`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+					`${existingPerson.name} is already added to phone book, replace the old number with a new one?`
 				)
 			) {
 				const changedPerson = { ...existingPerson, number: newNumber };
@@ -130,22 +132,39 @@ const App = () => {
 					.update(id, changedPerson)
 					.then((res) => {
 						setPersons(persons.map((n) => (n.id !== id ? n : res)));
-						alert('Number updated');
+						setMessage('Number updated');
 						setNewName('');
 						setNewNumber('');
+						setTimeout(() => {
+							setMessage(null);
+						}, 3000);
 					})
-					.catch((e) => console.log(e));
+					.catch((e) => {
+						setMessage('Something wrong happened while updating. Try again.');
+						console.log(e);
+						setTimeout(() => {
+							setMessage(null);
+						}, 3000);
+					});
 			}
 		} else if (existingPerson) {
-			alert(`${newName} is already added to phone book.`); // avoid adding duplicate item
+			setMessage(`${newName} is already added to phone book.`); // avoid adding duplicate item
 			setNewName('');
 			setNewNumber('');
+			setTimeout(() => {
+				setMessage(null);
+			}, 3000);
 			return;
 		} else {
 			personService.create(newInput).then((response) => {
 				setPersons(persons.concat(response));
+				setMessage(`${response.name} was added to the contact.`);
+
 				setNewName('');
 				setNewNumber('');
+				setTimeout(() => {
+					setMessage(null);
+				}, 3000);
 			});
 		}
 	};
@@ -165,7 +184,15 @@ const App = () => {
 		if (window.confirm('You sure you wanna delete it?')) {
 			personService
 				.deletePerson(id)
-				.then(setPersons(persons.filter((n) => n.id !== id)));
+				.then(setPersons(persons.filter((n) => n.id !== id)))
+				.catch((e) => {
+					console.log(e);
+					setMessage('No such person found.');
+				});
+			setMessage('Contact Deleted');
+			setTimeout(() => {
+				setMessage(null);
+			}, 3000);
 		} else {
 			return;
 		}
@@ -174,6 +201,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phone book</h2>
+			<Notification message={message} />
 
 			<Filter filter={filter} onFilterChange={handleFilterChange} />
 			<PersonForm
