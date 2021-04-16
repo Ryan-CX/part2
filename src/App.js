@@ -96,9 +96,6 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('');
 	const [filter, setFilter] = useState('');
 
-	const filtered = persons.filter((p) =>
-		p.name.toLowerCase().includes(filter.toLowerCase())
-	);
 	useEffect(() => {
 		personService.getAll().then((res) => {
 			setPersons(res.data);
@@ -193,7 +190,7 @@ const App = () => {
 
 			<h3>Filtered results</h3>
 			<ul>
-				<FilterResult FilterArr={filtered} />
+				<FilterResult FilterArr={persons} filter={filter} />
 			</ul>
 		</div>
 	);
