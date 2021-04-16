@@ -96,6 +96,9 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('');
 	const [filter, setFilter] = useState('');
 
+	const filtered = persons.filter((p) =>
+		p.name.toLowerCase().includes(filter.toLowerCase())
+	);
 	useEffect(() => {
 		personService.getAll().then((res) => {
 			setPersons(res.data);
@@ -104,6 +107,10 @@ const App = () => {
 
 	const addName = (event) => {
 		event.preventDefault(); //prevent the default action by submit button
+		if (!newName || !newNumber) {
+			alert('Please fill in the fields');
+			return;
+		}
 		const newInput = {
 			name: newName,
 			number: newNumber,
@@ -112,13 +119,34 @@ const App = () => {
 		const existingPerson = persons.find(
 			(p) => p.name.toLowerCase() === newName.toLowerCase()
 		);
-		if (existingPerson) {
+
+		if (existingPerson && existingPerson.number !== newNumber) {
+			if (
+				window.confirm(
+					`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+				)
+			) {
+				const changedPerson = { ...existingPerson, number: newNumber };
+				const id = existingPerson.id;
+
+				personService
+					.update(id, changedPerson)
+					.then((res) => {
+						setPersons(persons.map((n) => (n.id !== id ? n : res)));
+						alert('Number updated');
+						setNewName('');
+						setNewNumber('');
+					})
+					.catch((e) => console.log(e));
+			}
+		} else if (existingPerson) {
 			alert(`${newName} is already added to phone book.`); // avoid adding duplicate item
 			setNewName('');
 			setNewNumber('');
+			return;
 		} else {
 			personService.create(newInput).then((response) => {
-				setPersons([...persons, response.data]);
+				setPersons(persons.concat(response));
 				setNewName('');
 				setNewNumber('');
 			});
@@ -137,14 +165,14 @@ const App = () => {
 	};
 
 	const handleDelete = (id) => {
-		personService
-			.deletePerson(id)
-			.then(setPersons(persons.filter((n) => n.id !== id)));
+		if (window.confirm('You sure you wanna delete it?')) {
+			personService
+				.deletePerson(id)
+				.then(setPersons(persons.filter((n) => n.id !== id)));
+		} else {
+			return;
+		}
 	};
-
-	const filtered = persons.filter((p) =>
-		p.name.toLowerCase().includes(filter.toLowerCase())
-	);
 
 	return (
 		<div>
@@ -158,7 +186,7 @@ const App = () => {
 				newNumber={newNumber}
 				handleNumberChange={handleNumberChange}
 			/>
-			<h2>Numbers</h2>
+			<h2>Name and Phone Number</h2>
 			<ul>
 				<Person personArr={persons} deletePerson={handleDelete} />
 			</ul>

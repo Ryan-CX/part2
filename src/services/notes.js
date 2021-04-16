@@ -20,4 +20,7 @@ const deleteNote = (id) => {
 	const request = axios.delete(`${baseUrl}/${id}`);
 	return request;
 };
-export default { getAll, create, update, deleteNote };
+
+const exportedObj = { getAll, create, update, deleteNote };
+
+export default exportedObj;
