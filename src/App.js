@@ -119,35 +119,36 @@ const App = () => {
 			(p) => p.name.toLowerCase() === newName.toLowerCase()
 		);
 
-		if (existingPerson && existingPerson.number !== newNumber) {
-			if (
-				window.confirm(
-					`${existingPerson.name} is already added to phone book, replace the old number with a new one?`
-				)
-			) {
-				const changedPerson = { ...existingPerson, number: newNumber };
-				const id = existingPerson.id;
+		// if (existingPerson && existingPerson.number !== newNumber) {
+		// 	if (
+		// 		window.confirm(
+		// 			`${existingPerson.name} is already added to phone book, replace the old number with a new one?`
+		// 		)
+		// 	) {
+		// 		const changedPerson = { ...existingPerson, number: newNumber };
+		// 		const id = existingPerson.id;
 
-				personService
-					.update(id, changedPerson)
-					.then((res) => {
-						setPersons(persons.map((n) => (n.id !== id ? n : res)));
-						setMessage('Number updated');
-						setNewName('');
-						setNewNumber('');
-						setTimeout(() => {
-							setMessage(null);
-						}, 3000);
-					})
-					.catch((e) => {
-						setMessage('Something wrong happened while updating. Try again.');
-						console.log(e);
-						setTimeout(() => {
-							setMessage(null);
-						}, 3000);
-					});
-			}
-		} else if (existingPerson) {
+		// 		personService
+		// 			.update(id, changedPerson)
+		// 			.then((res) => {
+		// 				setPersons(persons.map((n) => (n.id !== id ? n : res)));
+		// 				setMessage('Number updated');
+		// 				setNewName('');
+		// 				setNewNumber('');
+		// 				setTimeout(() => {
+		// 					setMessage(null);
+		// 				}, 3000);
+		// 			})
+		// 			.catch((e) => {
+		// 				setMessage('Something wrong happened while updating. Try again.');
+		// 				console.log(e);
+		// 				setTimeout(() => {
+		// 					setMessage(null);
+		// 				}, 3000);
+		// 			});
+		// 	}
+		// } else
+		if (existingPerson) {
 			setMessage(`${newName} is already added to phone book.`); // avoid adding duplicate item
 			setNewName('');
 			setNewNumber('');
