@@ -19,9 +19,10 @@ const updateData = (id, newData) => {
 		.then((response) => response.data);
 };
 
-export default {
+const exportedObject = {
 	getAll,
 	createData,
 	deleteData,
 	updateData,
 };
+export default exportedObject;
